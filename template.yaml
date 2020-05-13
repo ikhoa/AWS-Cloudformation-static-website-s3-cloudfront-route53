@@ -13,7 +13,7 @@ Parameters:
     ConstraintDescription: must be a valid DNS zone name
   AcmCertificateArn:
     Type: String
-    Description: the Amamzon Resource Name (ARN) of an AWS certificate(Certificate must be created in us-east-1 region)
+    Description: the Amazon Resource Name (ARN) of an AWS certificate(Certificate must be created in us-east-1 region)
     AllowedPattern: "arn:aws:acm:.*"
   HostedZoneId:
     Type: String
@@ -80,7 +80,7 @@ Resources:
 Outputs:
   BucketName:
     Value: !Ref WebsiteBucket
-    Description: Name of s3 bucket to hold website content
+    Description: Name of s3 bucket that stores website content
   CloudfrontEndPoint:
     Value: !GetAtt [WebsiteCloudFront, DomainName]
     Description: Endpoint for cloudfront distribution
