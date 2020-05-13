@@ -1,0 +1,89 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: S3 bucket configured for hosting a static website, and a Route 53 DNS record pointing to the bucker
+Parameters:
+  DomainName:
+    Type: String
+    Description: The DNS name of an existing Amazon Route 53 hosted zone e.g kellyaudu.me
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]{1,63}(?<!-)
+    ConstraintDescription: must be a valid DNS zone name
+  FullDomainName:
+    Type: String
+    Description: The full domain name e.g www.kellyaudu.io
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]{1,63}(?<!-)
+    ConstraintDescription: must be a valid DNS zone name
+  AcmCertificateArn:
+    Type: String
+    Description: the Amamzon Resource Name (ARN) of an AWS certificate(Certificate must be created in us-east-1 region)
+    AllowedPattern: "arn:aws:acm:.*"
+  HostedZoneId:
+    Type: String
+    Description: The hosted zone of the domain name
+Resources:
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref FullDomainName
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: 404.html
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebsiteBucket
+      PolicyDocument:
+        Statement:
+          Effect: Allow
+          Principal: '*'
+          Action: S3:GetObject
+          Resource: !Join ['', ['arn:aws:s3:::', !Ref WebsiteBucket, /*]]
+  WebsiteCloudFront:
+    Type: AWS::CloudFront::Distribution
+    Description: WebsiteBucket
+    Properties:
+      DistributionConfig:
+        Comment: Cloudfront Distribution pointing to s3 bucket for kelly's website
+        Origins:
+          - DomainName: !Select [2, !Split ['/', !GetAtt WebsiteBucket.WebsiteURL]]
+            Id: S3Origin
+            CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginProtocolPolicy: http-only
+        Enabled: true
+        HttpVersion: 'http2'
+        DefaultRootObject: index.html
+        Aliases:
+          - !Ref FullDomainName
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          TargetOriginId: S3Origin
+          ForwardedValues:
+            QueryString: true
+          ViewerProtocolPolicy: redirect-to-https
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          AcmCertificateArn: !Ref AcmCertificateArn
+          SslSupportMethod: sni-only
+  WebsiteDNSName:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Type: A
+      Name: !Ref FullDomainName
+      AliasTarget:
+        DNSName: !GetAtt WebsiteCloudFront.DomainName
+        HostedZoneId: !Ref HostedZoneId
+Outputs:
+  BucketName:
+    Value: !Ref WebsiteBucket
+    Description: Name of s3 bucket to hold website content
+  CloudfrontEndPoint:
+    Value: !GetAtt [WebsiteCloudFront, DomainName]
+    Description: Endpoint for cloudfront distribution
+  FullDomainName:
+    Value: !Ref FullDomainName
+    Description: Full DomainName
