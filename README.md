@@ -1,6 +1,6 @@
 # AWS-Cloudformation-static-website-s3-cloudfront-route53
 A cloud formation template that creates a static website that uses a custom domain to server traffic through a cloud front distribution with website static asserts hosted in an s3 bucket.
-######Properties
+###### Properties
 * DomainName - The DNS name of an existing Amazon Route 53 hosted zone e.g kellyaudu.me
 * FullDomainName - The full domain name e.g www.kellyaudu.io
 * AcmCertificateArn - The Amazon Resource Name (ARN) of an AWS certificate(Certificate must be created in us-east-1 region)
