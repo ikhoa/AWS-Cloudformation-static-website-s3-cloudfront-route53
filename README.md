@@ -1,9 +1,10 @@
 # AWS-Cloudformation-static-website-s3-cloudfront-route53
 ## Goal
 A cloud formation template that creates a static website that uses a custom domain to server traffic through a cloud front distribution with website static asserts hosted in an s3 bucket.
-## Periquisites 
-    * [Python]
-    * [AWS Command Line Interface] 
+## Perquisites
+[Python]    
+[AWS Command Line Interface]
+    
 You must configure the default credential for use with [AWS Command Line Interface] 
 ```shell script
 $ aws configure
