@@ -3,7 +3,7 @@
 A cloud formation template that creates a static website that uses a custom domain to server traffic through a cloud front distribution with website static asserts hosted in an s3 bucket.
 ## Periquisites 
     * [Python]
-    * [AWS Command Line Interface]
+    * [AWS Command Line Interface] 
 You must configure the default credential for use with [AWS Command Line Interface] 
 ```shell script
 $ aws configure
@@ -37,3 +37,5 @@ aws cloudformation validate-template --template-url file:///home/testuser/mytemp
     "Capabilities": []
 }
 ```
+[AWS Command Line Interface]:http://aws.amazon.com/cli/
+[Python]:https://www.python.org/
