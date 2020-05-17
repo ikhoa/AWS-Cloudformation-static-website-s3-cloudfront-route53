@@ -1,5 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: S3 bucket configured for hosting a static website, and a Route 53 DNS record pointing to the bucker
+Description: >
+  A cloud formation template that creates a static website that uses a custom domain to server traffic
+  through a cloud front distribution with website static asserts hosted in an s3 bucket.
 Parameters:
   DomainName:
     Type: String
